@@ -104,18 +104,18 @@ const GlobeVisualization = ({ globeData, analysis, onClose }) => {
         </Canvas>
       </div>
       <div className="w-1/4 bg-white p-4 overflow-auto">
-        <h2 className="text-xl font-semibold mb-4">Global Market Analysis</h2>
+        <h2 className="text-xl font-semibold mb-4 text-black">Global Market Analysis</h2>
         <div className="mb-4">
           <h3 className="font-semibold text-red-600">Existing Markets:</h3>
-          <p>{analysis.existing}</p>
+          <p className="text-black">{analysis.existing || 'No data available'}</p>
         </div>
         <div className="mb-4">
           <h3 className="font-semibold text-green-600">Potential Markets:</h3>
-          <p>{analysis.potential}</p>
+          <p className="text-black">{analysis.potential || 'No data available'}</p>
         </div>
         <div className="mb-4">
           <h3 className="font-semibold text-yellow-600">Challenging Markets:</h3>
-          <p>{analysis.challenging}</p>
+          <p className="text-black">{analysis.challenging || 'No data available'}</p>
         </div>
         <button
           onClick={onClose}
@@ -135,9 +135,9 @@ GlobeVisualization.propTypes = {
     challenging: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
   analysis: PropTypes.shape({
-    existing: PropTypes.string.isRequired,
-    potential: PropTypes.string.isRequired,
-    challenging: PropTypes.string.isRequired,
+    existing: PropTypes.string,
+    potential: PropTypes.string,
+    challenging: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
 };
