@@ -2,9 +2,6 @@ import { NextResponse } from 'next/server';
 import SerpApi from 'google-search-results-nodejs';
 import OpenAI from 'openai';
 
-const search = new SerpApi.GoogleSearch(process.env.SERPAPI_API_KEY);
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get('query');
@@ -17,6 +14,10 @@ export async function GET(request) {
   }
 
   try {
+    // Initialize clients inside the handler
+    const search = new SerpApi.GoogleSearch(process.env.SERPAPI_API_KEY);
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    
     const gptPrompt = `Given the app idea: "${query}", generate three separate search queries:
     1. A query to find similar web apps on Google
     2. A query optimized for the Apple App Store
@@ -32,10 +33,11 @@ export async function GET(request) {
     const searchQueries = JSON.parse(gptResponse.choices[0].message.content);
     console.log('GPT-generated search queries:', searchQueries);
 
+    // Pass the `search` instance to the helper functions
     const [googleResults, appStoreResults, playStoreResults] = await Promise.all([
-      performGoogleSearch(searchQueries.googleQuery),
-      performAppStoreSearch(searchQueries.appStoreQuery),
-      performPlayStoreSearch(searchQueries.playStoreQuery)
+      performGoogleSearch(search, searchQueries.googleQuery),
+      performAppStoreSearch(search, searchQueries.appStoreQuery),
+      performPlayStoreSearch(search, searchQueries.playStoreQuery)
     ]);
 
     const combinedResults = [...googleResults, ...appStoreResults, ...playStoreResults];
@@ -92,7 +94,8 @@ export async function GET(request) {
   }
 }
 
-async function performGoogleSearch(query) {
+// Update helper functions to accept `search` as a parameter
+async function performGoogleSearch(search, query) {
   return new Promise((resolve, reject) => {
     search.json({
       q: query,
@@ -118,7 +121,7 @@ async function performGoogleSearch(query) {
   });
 }
 
-async function performAppStoreSearch(query) {
+async function performAppStoreSearch(search, query) {
   return new Promise((resolve, reject) => {
     search.json({
       engine: "apple_app_store",
@@ -150,7 +153,7 @@ async function performAppStoreSearch(query) {
   });
 }
 
-async function performPlayStoreSearch(query) {
+async function performPlayStoreSearch(search, query) {
   return new Promise((resolve, reject) => {
     search.json({
       engine: "google_play",
