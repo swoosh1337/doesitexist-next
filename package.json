@@ -9,14 +9,27 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/drei": "^9.114.3",
+    "@react-three/fiber": "^8.17.9",
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "google-search-results-nodejs": "^2.1.0",
+    "next": "14.2.14",
+    "openai": "^4.67.2",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.14"
+    "three": "^0.169.0"
   },
   "devDependencies": {
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.14"
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.14",
+    "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13"
   }
 }
