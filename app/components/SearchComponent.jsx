@@ -1,9 +1,9 @@
 'use client'
 
-/* eslint-disable react/no-unescaped-entities */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import GlobeVisualization from './GlobeVisualization';
+import { motion } from 'framer-motion';
 
 const API_URL = '/api';
 
@@ -93,78 +93,137 @@ const SearchComponent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 flex flex-col">
       <header className="bg-white shadow-md p-6">
-        <h1 className="text-3xl font-bold text-center text-gray-800">Check if your app idea already exists</h1>
+        <h1 className="text-4xl font-bold text-center text-gray-800">App Idea Analyzer</h1>
       </header>
       <main className="flex-grow p-6 overflow-auto">
         <div className="max-w-4xl mx-auto">
-          <form onSubmit={handleSearch} className="mb-8 bg-white p-6 rounded-lg shadow-md">
+          <motion.form
+            onSubmit={handleSearch}
+            className="mb-8 bg-white p-6 rounded-lg shadow-lg"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for a project or describe an idea"
-              className="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black placeholder-gray-500"
+              placeholder="Enter your app idea"
+              className="w-full p-4 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black placeholder-gray-500 text-lg"
             />
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition duration-300 font-semibold"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 rounded-md hover:from-blue-600 hover:to-purple-700 transition duration-300 font-semibold text-lg"
             >
-              Search
+              Analyze App Idea
             </button>
-          </form>
+          </motion.form>
+
           {isLoading && (
-            <div className="text-center my-4">
-              <p className="text-gray-600">Analyzing results...</p>
-              {/* You could add a spinner or loading animation here */}
-            </div>
+            <motion.div
+              className="text-center my-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <p className="text-gray-600 text-lg">Analyzing your app idea...</p>
+              {/* Add a loading spinner here */}
+            </motion.div>
           )}
+
           {error && (
-            <div className="text-red-500 mb-4 bg-red-100 p-4 rounded-md">{error}</div>
+            <motion.div
+              className="text-red-500 mb-4 bg-red-100 p-4 rounded-md"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {error}
+            </motion.div>
           )}
-          {searchResults && searchResults.length > 0 && (
-            <div className="mb-8 bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-semibold mb-4 text-gray-800">Top 5 Search Results</h2>
-              <ul>
-                {searchResults.slice(0, 5).map((result, index) => (
-                  <li key={index} className="mb-4">
-                    <a 
-                      href={result.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="block hover:bg-gray-50 p-3 rounded transition duration-150"
-                    >
-                      <h3 className="font-semibold text-blue-600 hover:underline">
-                        {result.title || 'No title available'}
-                      </h3>
-                      <p className="text-green-700 text-sm">{result.displayed_link || result.link || 'No link available'}</p>
-                      <p className="text-gray-600 text-sm mt-1">{result.snippet || 'No description available'}</p>
-                      <p className="text-gray-500 text-xs mt-1">Source: {result.source || 'Web'}</p>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              
-              <button
-                onClick={handleGlobeVisualization}
-                className="mt-4 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition duration-300 flex items-center justify-center"
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                View Global Market Potential
-              </button>
-            </div>
-          )}
+
           {analysisText && (
-            <div className="mb-8 bg-white p-6 rounded-lg shadow-md">
+            <motion.div
+              className="mb-8 bg-white p-6 rounded-lg shadow-lg"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <h2 className="text-2xl font-semibold mb-4 text-gray-800">Analysis</h2>
-              <p className="text-gray-700 whitespace-pre-wrap">{analysisText}</p>
-            </div>
+              
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">Summary</h3>
+                <p className="text-gray-800">{analysisText.summary}</p>
+              </div>
+
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">Existing Apps</h3>
+                <ul className="list-disc pl-5">
+                  {analysisText.existingApps.map((app, index) => (
+                    <li key={index} className="mb-2 text-gray-800">
+                      <span className="font-semibold">{app.name}</span>: {app.description}
+                      <br />
+                      <span className="text-sm text-gray-700">
+                        Market Share: {app.marketShare} | Revenue: {app.revenue}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">Market Analysis</h3>
+                <p className="text-gray-800"><strong>Total Market Size:</strong> {analysisText.marketAnalysis.totalMarketSize}</p>
+                <p className="text-gray-800"><strong>Growth Rate:</strong> {analysisText.marketAnalysis.growthRate}</p>
+                <p className="text-gray-800"><strong>Key Players:</strong> {analysisText.marketAnalysis.keyPlayers.join(', ')}</p>
+                <p className="text-gray-800"><strong>Trends:</strong> {analysisText.marketAnalysis.trends.join(', ')}</p>
+              </div>
+
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">User Demographics</h3>
+                <p className="text-gray-800"><strong>Age Groups:</strong> {analysisText.userDemographics.ageGroups.join(', ')}</p>
+                <p className="text-gray-800"><strong>Regions:</strong> {analysisText.userDemographics.regions.join(', ')}</p>
+                <p className="text-gray-800"><strong>Interests:</strong> {analysisText.userDemographics.interests.join(', ')}</p>
+              </div>
+
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">Monetization Strategies</h3>
+                <ul className="list-disc pl-5">
+                  {analysisText.monetizationStrategies.map((strategy, index) => (
+                    <li key={index} className="text-gray-800">{strategy}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">Challenges</h3>
+                <ul className="list-disc pl-5">
+                  {analysisText.challenges.map((challenge, index) => (
+                    <li key={index} className="text-gray-800">{challenge}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">Opportunities</h3>
+                <ul className="list-disc pl-5">
+                  {analysisText.opportunities.map((opportunity, index) => (
+                    <li key={index} className="text-gray-800">{opportunity}</li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
           )}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-800">Your previous searches</h2>
+
+          <motion.div
+            className="bg-white p-6 rounded-lg shadow-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <h2 className="text-2xl font-semibold mb-4 text-gray-800">Previous Searches</h2>
             <ul>
               {previousSearches.map((search, index) => (
                 <li key={index} className="flex items-center justify-between py-3 border-b last:border-b-0">
@@ -178,7 +237,8 @@ const SearchComponent = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
+
           {showGlobe && globeData && (
             <GlobeVisualization
               globeData={globeData}
