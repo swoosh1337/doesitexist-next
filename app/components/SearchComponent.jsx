@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import GlobeVisualization from './GlobeVisualization';
 import { motion } from 'framer-motion';
 
 const API_URL = '/api';
@@ -98,7 +97,7 @@ const SearchComponent = () => {
         <h1 className="text-4xl font-bold text-center text-gray-800">App Idea Analyzer</h1>
       </header>
       <main className="flex-grow p-6 overflow-auto">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <motion.form
             onSubmit={handleSearch}
             className="mb-8 bg-white p-6 rounded-lg shadow-lg"
@@ -145,76 +144,78 @@ const SearchComponent = () => {
           )}
 
           {analysisText && (
-            <motion.div
-              className="mb-8 bg-white p-6 rounded-lg shadow-lg"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <h2 className="text-2xl font-semibold mb-4 text-gray-800">Analysis</h2>
+            <>
+              <motion.div
+                className="mb-8 bg-white p-6 rounded-lg shadow-lg"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h2 className="text-2xl font-semibold mb-4 text-gray-800">Analysis</h2>
               
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Summary</h3>
-                <p className="text-gray-800">{analysisText.summary}</p>
-              </div>
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Summary</h3>
+                  <p className="text-gray-800">{analysisText.summary}</p>
+                </div>
 
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Existing Apps</h3>
-                <ul className="list-disc pl-5">
-                  {analysisText.existingApps.map((app, index) => (
-                    <li key={index} className="mb-2 text-gray-800">
-                      <span className="font-semibold">{app.name}</span>: {app.description}
-                      <br />
-                      <span className="text-sm text-gray-700">
-                        Market Share: {app.marketShare} | Revenue: {app.revenue}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Existing Apps</h3>
+                  <ul className="list-disc pl-5">
+                    {analysisText.existingApps.map((app, index) => (
+                      <li key={index} className="mb-2 text-gray-800">
+                        <span className="font-semibold">{app.name}</span>: {app.description}
+                        <br />
+                        <span className="text-sm text-gray-700">
+                          Market Share: {app.marketShare} | Revenue: {app.revenue}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Market Analysis</h3>
-                <p className="text-gray-800"><strong>Total Market Size:</strong> {analysisText.marketAnalysis.totalMarketSize}</p>
-                <p className="text-gray-800"><strong>Growth Rate:</strong> {analysisText.marketAnalysis.growthRate}</p>
-                <p className="text-gray-800"><strong>Key Players:</strong> {analysisText.marketAnalysis.keyPlayers.join(', ')}</p>
-                <p className="text-gray-800"><strong>Trends:</strong> {analysisText.marketAnalysis.trends.join(', ')}</p>
-              </div>
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Market Analysis</h3>
+                  <p className="text-gray-800"><strong>Total Market Size:</strong> {analysisText.marketAnalysis.totalMarketSize}</p>
+                  <p className="text-gray-800"><strong>Growth Rate:</strong> {analysisText.marketAnalysis.growthRate}</p>
+                  <p className="text-gray-800"><strong>Key Players:</strong> {analysisText.marketAnalysis.keyPlayers.join(', ')}</p>
+                  <p className="text-gray-800"><strong>Trends:</strong> {analysisText.marketAnalysis.trends.join(', ')}</p>
+                </div>
 
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">User Demographics</h3>
-                <p className="text-gray-800"><strong>Age Groups:</strong> {analysisText.userDemographics.ageGroups.join(', ')}</p>
-                <p className="text-gray-800"><strong>Regions:</strong> {analysisText.userDemographics.regions.join(', ')}</p>
-                <p className="text-gray-800"><strong>Interests:</strong> {analysisText.userDemographics.interests.join(', ')}</p>
-              </div>
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800">User Demographics</h3>
+                  <p className="text-gray-800"><strong>Age Groups:</strong> {analysisText.userDemographics.ageGroups.join(', ')}</p>
+                  <p className="text-gray-800"><strong>Regions:</strong> {analysisText.userDemographics.regions.join(', ')}</p>
+                  <p className="text-gray-800"><strong>Interests:</strong> {analysisText.userDemographics.interests.join(', ')}</p>
+                </div>
 
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Monetization Strategies</h3>
-                <ul className="list-disc pl-5">
-                  {analysisText.monetizationStrategies.map((strategy, index) => (
-                    <li key={index} className="text-gray-800">{strategy}</li>
-                  ))}
-                </ul>
-              </div>
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Monetization Strategies</h3>
+                  <ul className="list-disc pl-5">
+                    {analysisText.monetizationStrategies.map((strategy, index) => (
+                      <li key={index} className="text-gray-800">{strategy}</li>
+                    ))}
+                  </ul>
+                </div>
 
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Challenges</h3>
-                <ul className="list-disc pl-5">
-                  {analysisText.challenges.map((challenge, index) => (
-                    <li key={index} className="text-gray-800">{challenge}</li>
-                  ))}
-                </ul>
-              </div>
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Challenges</h3>
+                  <ul className="list-disc pl-5">
+                    {analysisText.challenges.map((challenge, index) => (
+                      <li key={index} className="text-gray-800">{challenge}</li>
+                    ))}
+                  </ul>
+                </div>
 
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Opportunities</h3>
-                <ul className="list-disc pl-5">
-                  {analysisText.opportunities.map((opportunity, index) => (
-                    <li key={index} className="text-gray-800">{opportunity}</li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Opportunities</h3>
+                  <ul className="list-disc pl-5">
+                    {analysisText.opportunities.map((opportunity, index) => (
+                      <li key={index} className="text-gray-800">{opportunity}</li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            </>
           )}
 
           <motion.div
@@ -238,14 +239,6 @@ const SearchComponent = () => {
               ))}
             </ul>
           </motion.div>
-
-          {showGlobe && globeData && (
-            <GlobeVisualization
-              globeData={globeData}
-              analysis={globeAnalysis}
-              onClose={closeGlobeVisualization}
-            />
-          )}
         </div>
       </main>
     </div>
