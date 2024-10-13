@@ -1,3 +1,6 @@
+export const runtime = 'nodejs';
+
+
 import { NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
 import OpenAI from 'openai';

@@ -1,3 +1,6 @@
+export const runtime = 'nodejs';
+
+
 import { NextResponse } from 'next/server';
 import SerpApi from 'google-search-results-nodejs';
 import OpenAI from 'openai';
