@@ -1,32 +1,18 @@
-
+export const runtime = 'nodejs';
 
 import { NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
+import { connectToDatabase } from '../../../lib/mongodb'; // Adjust the import path if needed
 import OpenAI from 'openai';
 
-const uri = process.env.MONGODB_URI;
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-let client;
-let database;
-
-async function connectToDatabase() {
-  if (!client) {
-    client = new MongoClient(uri);
-    await client.connect();
-  }
-  if (!database) {
-    database = client.db('app_idea_analyzer');
-  }
-  return database;
-}
 
 export async function GET(request) {
   console.log('GET request received for /api/top-ideas');
   try {
-    const db = await connectToDatabase();
+    const { db } = await connectToDatabase();
     const ideas = db.collection('ideas');
 
+    console.log('Fetching top ideas...');
     const topIdeas = await ideas.find().sort({ searches: -1 }).limit(5).toArray();
 
     console.log(`Returning ${topIdeas.length} top ideas`);
@@ -51,7 +37,7 @@ export async function POST(request) {
 
     const { appName, description, category } = await generateAppDetails(userInput);
 
-    const db = await connectToDatabase();
+    const { db } = await connectToDatabase();
     const ideas = db.collection('ideas');
 
     const result = await ideas.updateOne(
