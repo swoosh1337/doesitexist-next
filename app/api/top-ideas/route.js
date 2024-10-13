@@ -12,18 +12,22 @@ async function connectToDatabase() {
   if (!client) {
     client = new MongoClient(uri);
     await client.connect();
+  }
+  if (!database) {
     database = client.db('app_idea_analyzer');
   }
   return database;
 }
 
 export async function GET(request) {
+  console.log('GET request received for /api/top-ideas');
   try {
     const db = await connectToDatabase();
     const ideas = db.collection('ideas');
 
     const topIdeas = await ideas.find().sort({ searches: -1 }).limit(5).toArray();
 
+    console.log(`Returning ${topIdeas.length} top ideas`);
     return NextResponse.json(topIdeas);
   } catch (error) {
     console.error('Error fetching top ideas:', error);
@@ -33,9 +37,13 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const { userInput } = await request.json();
+    const body = await request.json();
+    console.log('Received POST request with body:', body);
+
+    const { userInput } = body;
 
     if (!userInput) {
+      console.log('User input is missing');
       return NextResponse.json({ error: 'User input is required' }, { status: 400 });
     }
 
@@ -65,8 +73,8 @@ export async function POST(request) {
       category: category
     });
   } catch (error) {
-    console.error('Error saving idea:', error);
-    return NextResponse.json({ error: 'An error occurred while saving the idea' }, { status: 500 });
+    console.error('Error in POST /api/top-ideas:', error);
+    return NextResponse.json({ error: 'An error occurred while processing the request' }, { status: 500 });
   }
 }
 

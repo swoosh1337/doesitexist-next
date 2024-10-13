@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 
@@ -46,22 +46,29 @@ const SearchComponent = () => {
   const [error, setError] = useState(null);
   const [analysisText, setAnalysisText] = useState(null);
   const [previousSearches, setPreviousSearches] = useState([]);
+  const fetchedRef = useRef(false);
+  const fetchingRef = useRef(false);
+
+  const fetchTopIdeas = useCallback(async () => {
+    if (fetchedRef.current || fetchingRef.current) return;
+    fetchingRef.current = true;
+    try {
+      const response = await axios.get(`${API_URL}/top-ideas`);
+      setTopIdeas(response.data);
+      fetchedRef.current = true;
+    } catch (error) {
+      console.error('Error fetching top ideas:', error);
+      setError('Failed to fetch top ideas');
+    } finally {
+      fetchingRef.current = false;
+    }
+  }, []);
 
   useEffect(() => {
     fetchTopIdeas();
     const savedSearches = JSON.parse(localStorage.getItem('previousSearches')) || [];
     setPreviousSearches(savedSearches);
-  }, []);
-
-  const fetchTopIdeas = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/top-ideas`);
-      setTopIdeas(response.data);
-    } catch (error) {
-      console.error('Error fetching top ideas:', error);
-      setError('Failed to fetch top ideas');
-    }
-  };
+  }, [fetchTopIdeas]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,7 +83,7 @@ const SearchComponent = () => {
       const analysisResponse = await axios.get(`${API_URL}/search?query=${encodeURIComponent(userInput)}`);
       console.log('Analysis response:', analysisResponse.data);
       if (analysisResponse.data && analysisResponse.data.analysis) {
-        setAnalysisText(analysisResponse.data.analysis); // This should already be a JavaScript object
+        setAnalysisText(analysisResponse.data.analysis);
         
         // Update previous searches
         const newSearch = { query: userInput, date: new Date().toLocaleString() };
@@ -108,6 +115,18 @@ const SearchComponent = () => {
       );
     }
     return app.name;
+  };
+
+  const formatMarketShareRevenue = (marketShare, revenue) => {
+    let result = '';
+    if (marketShare && !isNaN(parseFloat(marketShare))) {
+      result += `Market Share: ${marketShare}%`;
+    }
+    if (revenue && !isNaN(parseFloat(revenue))) {
+      if (result) result += ' | ';
+      result += `Revenue: $${revenue}`;
+    }
+    return result || 'No market share or revenue data available';
   };
 
   return (
@@ -171,7 +190,7 @@ const SearchComponent = () => {
                         <strong>{renderAppLink(app)}</strong>: {app.description}
                         <br />
                         <span className="text-sm text-gray-500">
-                          Market Share: {app.marketShare} | Revenue: {app.revenue}
+                          {formatMarketShareRevenue(app.marketShare, app.revenue)}
                         </span>
                       </li>
                     ))}
